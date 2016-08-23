@@ -35,10 +35,10 @@ white = WhiteIndex( wPtr );
 Screen( 'fillRect', wPtr, black );
 Screen( 'TextSize', wPtr, 40 );
 Screen( 'TextFont', wPtr, 'Windings3');
-str='Please watch the following movies \n \n and press x if the perceived walking direction changes.';
+str='Please watch the following movies \n \n and press [SPACE] if the perceived walking direction changes.';
 [nx, ny, textbounds] = DrawFormattedText(wPtr, str , 'center', 'center', [255 255 255]);
 Screen('Flip', wPtr);
-tic; while toc<4,end
+tic; while toc<6,end
 
 dname0 =  'cond0';
 dname14 =  'cond14';
@@ -216,6 +216,10 @@ for trial = 1:numberofblocks
         for k=1:1:numel(frames2)
             if toc>=durationvid
                 displaytotal = cputime-displaystart
+                str='You did not see a switch.';
+                [nx, ny, textbounds] = DrawFormattedText(wPtr, str , 'center', 'center', [255 255 255]);
+                Screen('Flip', wPtr);
+                ystart = tic; while toc(ystart)<2,end        
                 break
             end
             tstart = tic; while toc(tstart) < 0.01, end
@@ -228,6 +232,11 @@ for trial = 1:numberofblocks
             end
             if toc>=durationvid
                 displaytotal = cputime-displaystart
+                str='You did not see switching.';
+                [nx, ny, textbounds] = DrawFormattedText(wPtr, str , 'center', 'center', [255 255 255]);
+                Screen('Flip', wPtr);
+                xstart = tic; while toc(xstart)<2,end
+                
                 break
             end
         end
@@ -302,11 +311,37 @@ for trial = 1:numberofblocks
             eflag2 = 1;
             break;
         end;
-    end
+        
+        %break
+        
+        
+
+        
+        
+    end 
     if eflag2 == 1
         break;
     end 
-end
+    
+    
+    if trial ~= numberofblocks
+        while KbCheck; end
+        % Input from Kb
+        keyIsDown = 0;
+        
+        
+        while keyIsDown == 0 
+            [keyIsDown, secs, keyCode, deltasec] = KbCheck;
+            
+            str='Time for a break. Please press any key if you want to go on.';
+            [nx, ny, textbounds] = DrawFormattedText(wPtr, str , 'center', 'center', [255 255 255]);
+            Screen('Flip', wPtr);
+        end
+     end
+        
+
+                
+end %blocks 
      
 Screen('CloseAll');
 disp('Movie displayed successfully');
